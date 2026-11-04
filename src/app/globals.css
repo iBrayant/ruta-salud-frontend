@@ -65,6 +65,10 @@ a:hover {
   font-family: var(--font-sans);
   background: var(--color-suave);
 }
+/* Fondo del mapa en tonos tenues para que resalten la ruta y las paradas */
+.leaflet-tile-pane {
+  filter: saturate(0.35) brightness(1.04) contrast(0.95);
+}
 .leaflet-control-attribution {
   font-size: 11px;
 }

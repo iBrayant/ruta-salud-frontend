@@ -1,11 +1,25 @@
 "use client";
 // Mapa real (Leaflet + OpenStreetMap). Solo puntos fijos de veredas: no hay rastreo de ubicación.
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CircleMarker, MapContainer, Polyline, TileLayer, Tooltip, useMap } from "react-leaflet";
 import type { LatLngBoundsExpression, LatLngExpression } from "leaflet";
 import type { CatalogoVeredas, Parada } from "@/lib/tipos";
 
 const MARCA = "#16748a";
+
+// Servidores de teselas. Si el oficial falla (p. ej. un firewall con inspección TLS lo bloquea,
+// como ocurre en la red de la universidad), el mapa cambia solo al de OpenStreetMap Francia.
+const TESELAS = [
+  {
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    atribucion: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  },
+  {
+    url: "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+    atribucion: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · teselas OSM France',
+  },
+];
+const ERRORES_PARA_CAMBIAR = 3;
 
 function Encuadre({ limites }: { limites: LatLngBoundsExpression }) {
   const mapa = useMap();
@@ -27,6 +41,15 @@ export default function MapaRuta({ catalogo, paradas }: { catalogo: CatalogoVere
     [hospital, paradas, porId],
   );
   const [trazado, setTrazado] = useState<{ linea: LatLngExpression[]; porVia: boolean }>({ linea: puntos, porVia: false });
+  const [servidor, setServidor] = useState(0);
+  const fallas = useRef(0);
+  const alFallarTesela = () => {
+    fallas.current += 1;
+    if (fallas.current >= ERRORES_PARA_CAMBIAR && servidor < TESELAS.length - 1) {
+      fallas.current = 0;
+      setServidor((s) => s + 1);
+    }
+  };
 
   // Trazado por las vías reales con OSRM; si falla, líneas rectas entre paradas.
   useEffect(() => {
@@ -63,8 +86,10 @@ export default function MapaRuta({ catalogo, paradas }: { catalogo: CatalogoVere
           aria-label="Mapa del recorrido de la jornada"
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            key={servidor}
+            attribution={TESELAS[servidor].atribucion}
+            url={TESELAS[servidor].url}
+            eventHandlers={{ tileerror: alFallarTesela }}
           />
           <Encuadre limites={limites} />
           <Polyline positions={trazado.linea} pathOptions={{ color: MARCA, weight: 3.5, opacity: 0.85, dashArray: trazado.porVia ? undefined : "6 6" }} />

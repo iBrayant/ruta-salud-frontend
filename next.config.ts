@@ -12,7 +12,8 @@ const csp = [
   // Next.js inserta scripts en línea para hidratar la página; en desarrollo necesita eval.
   `script-src 'self' 'unsafe-inline'${DEV ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://tile.openstreetmap.org",
+  // Teselas: servidor oficial de OSM y respaldo de OSM Francia
+  "img-src 'self' data: https://tile.openstreetmap.org https://*.tile.openstreetmap.fr",
   `connect-src 'self' ${AUTH_ORIGIN} https://router.project-osrm.org`,
   "font-src 'self'",
   "frame-src 'none'",
