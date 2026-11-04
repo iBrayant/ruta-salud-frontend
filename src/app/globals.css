@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Paleta derivada de la identidad del Hospital San Rafael (azul petróleo #19879E, verde #84B041,
+   gris #454545), ajustada para contraste AA sobre fondo claro. Solo modo claro. */
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-fondo: #f6f8f9;
+  --color-superficie: #ffffff;
+  --color-suave: #f3f6f7;
+  --color-linea: #e3e8eb;
+  --color-linea-tenue: #eef2f4;
+  --color-campo: #d3dbdf;
+
+  --color-tinta: #1e2a30;
+  --color-tinta-2: #3e4c53;
+  --color-tenue: #5a6870;
+
+  --color-marca: #16748a;
+  --color-marca-hover: #115e70;
+  --color-marca-suave: #e6f2f5;
+  --color-marca-borde: #c5e1e8;
+
+  --color-verde-suave: #eef5e4;
+  --color-verde-texto: #4d6b22;
+  --color-verde-icono: #6e9634;
+
+  --color-ocre-suave: #f4eee3;
+  --color-ocre-texto: #6b4d22;
+
+  --color-error-suave: #fbeeee;
+  --color-error-texto: #8a2b2b;
+}
+
+html {
+  color-scheme: light;
+  background: var(--color-fondo);
+}
+
+body {
+  background: var(--color-fondo);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-marca);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--color-marca);
+}
+a:hover {
+  color: var(--color-marca-hover);
+}
+
+/* Leaflet: atribución discreta y coherente con la tipografía */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--color-suave);
+}
+.leaflet-control-attribution {
+  font-size: 11px;
+}
+.etiqueta-mapa {
+  background: #fff;
+  border: 1px solid var(--color-linea);
+  border-radius: 6px;
+  box-shadow: none;
+  color: var(--color-tinta);
+  font-size: 12px;
+  padding: 2px 6px;
+}
+.etiqueta-mapa::before {
+  display: none;
+}
