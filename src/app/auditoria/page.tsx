@@ -6,6 +6,7 @@ import { ErrorApi, useApi } from "@/lib/api";
 import { horaCorta, km, nombreAccion, nombreActor } from "@/lib/formato";
 import type { EventoAuditoria, Reproduccion, RutaResumen, Verificacion } from "@/lib/tipos";
 
+const POR_PAGINA = 25;
 const ACCIONES = ["ruta_generada", "explicacion_generada", "consulta_asistente", "ruta_reproducida", "ruta_ejecutada", "simulacion_ejecutada", "auditoria_consultada"];
 
 export default function Auditoria() {
@@ -40,15 +41,21 @@ function PanelAuditoria() {
     }
   }, [api]);
 
+  const [filtrosActivos, setFiltrosActivos] = useState<{ acc: string; rutaId: string }>({ acc: "", rutaId: "" });
+  const [hayMas, setHayMas] = useState(false);
+
   const cargarEventos = useCallback(
-    async (acc: string, rutaId: string) => {
+    async (acc: string, rutaId: string, desplazamiento = 0) => {
       setOcupado("eventos");
       setError(null);
-      const q = new URLSearchParams({ limite: "50" });
+      const q = new URLSearchParams({ limite: String(POR_PAGINA), desplazamiento: String(desplazamiento) });
       if (acc) q.set("accion", acc);
       if (rutaId) q.set("recurso", `ruta:${rutaId}`);
       try {
-        setEventos(await api<EventoAuditoria[]>(`/auditoria/eventos?${q}`));
+        const nuevos = await api<EventoAuditoria[]>(`/auditoria/eventos?${q}`);
+        setEventos((prev) => (desplazamiento > 0 && prev ? [...prev, ...nuevos] : nuevos));
+        setHayMas(nuevos.length === POR_PAGINA);
+        setFiltrosActivos({ acc, rutaId });
       } catch (e) {
         setError(msg(e));
       } finally {
@@ -174,6 +181,17 @@ function PanelAuditoria() {
                 ))}
               </tbody>
             </table>
+          )}
+          {eventos && hayMas && (
+            <div className="flex justify-center border-t border-linea-tenue p-3">
+              <Boton
+                variante="neutro"
+                disabled={ocupado === "eventos"}
+                onClick={() => void cargarEventos(filtrosActivos.acc, filtrosActivos.rutaId, eventos.length)}
+              >
+                {ocupado === "eventos" ? "Cargando…" : "Ver más eventos"}
+              </Boton>
+            </div>
           )}
         </div>
 

@@ -18,8 +18,15 @@ export function fechaLarga(iso: string): string {
   return new Date(a, m - 1, d).toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" });
 }
 
+// Los usuarios están en Colombia: se muestra siempre la hora de Bogotá, sin importar la zona del equipo.
 export function horaCorta(iso: string): string {
-  return new Date(iso).toLocaleString("es-CO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleString("es-CO", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Bogota",
+  });
 }
 
 export function manana(): string {

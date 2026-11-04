@@ -67,6 +67,8 @@ export function PanelExplicacion({ ruta }: { ruta: Ruta }) {
     return <p className="text-sm text-tenue">Esta ruta no tiene explicación: el servicio de IA no estaba disponible. La ruta es válida porque la calcula el algoritmo.</p>;
   }
   const revisada = e.revision_etica.aprobado_reglas;
+  // El aviso de plantilla ya se muestra al pie; no se repite en las advertencias.
+  const advertencias = (e.advertencias ?? []).filter((a) => !a.toLowerCase().includes("plantilla"));
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm text-tinta-2">{e.resumen}</p>
@@ -77,9 +79,9 @@ export function PanelExplicacion({ ruta }: { ruta: Ruta }) {
           </li>
         ))}
       </ul>
-      {e.advertencias && e.advertencias.length > 0 && (
+      {advertencias.length > 0 && (
         <ul className="flex list-disc flex-col gap-1 pl-5 text-[13px] text-tenue">
-          {e.advertencias.map((a) => (
+          {advertencias.map((a) => (
             <li key={a}>{a}</li>
           ))}
         </ul>
