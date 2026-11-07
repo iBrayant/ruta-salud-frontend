@@ -4,6 +4,8 @@ Interfaz web del sistema de priorización de rutas de atención domiciliaria en 
 
 Prototipo académico. Usa los colores de la identidad del Hospital San Rafael, pero no es un sistema oficial del hospital.
 
+**Backend:** [iBrayant/ruta-salud-backend](https://github.com/iBrayant/ruta-salud-backend) (microservicios FastAPI, Keycloak, Postgres, Redis y Nginx).
+
 ## Pantallas
 | Ruta | Rol | Qué hace |
 |---|---|---|
@@ -22,7 +24,7 @@ Las versiones están fijadas y tenían al menos dos semanas de publicadas cuando
 - **Mapa:** las teselas vienen de OpenStreetMap y el trazado por vías de OSRM. Solo se muestran ubicaciones fijas de las veredas; no hay rastreo de ubicación.
 
 ## Desarrollo local
-Requiere el backend (`ruta-salud-fusa`) corriendo en `http://localhost:8080`.
+Requiere el [backend](https://github.com/iBrayant/ruta-salud-backend) corriendo en `http://localhost:8080`.
 ```bash
 cp .env.example .env.local
 npm install
